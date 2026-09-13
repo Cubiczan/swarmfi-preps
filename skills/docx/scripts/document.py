@@ -44,6 +44,17 @@ from .utilities import XMLEditor
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
 
+def _resolve_under(base, user_path):
+    """Resolve user_path under base and reject traversal that escapes base."""
+    base_resolved = Path(base).resolve()
+    resolved = (base_resolved / user_path).resolve()
+    try:
+        resolved.relative_to(base_resolved)
+    except ValueError:
+        raise ValueError(f"Path escapes allowed directory: {user_path}")
+    return resolved
+
+
 class DocxXMLEditor(XMLEditor):
     """XMLEditor that automatically applies RSID, author, and date to new elements.
 
@@ -701,7 +712,7 @@ class Document:
             comment = doc["word/comments.xml"].get_node(tag="w:comment", attrs={"w:id": "0"})
         """
         if xml_path not in self._editors:
-            file_path = self.unpacked_path / xml_path
+            file_path = _resolve_under(self.unpacked_path, xml_path)
             if not file_path.exists():
                 raise ValueError(f"XML file not found: {xml_path}")
             # Use DocxXMLEditor with RSID, author, and initials for all editors

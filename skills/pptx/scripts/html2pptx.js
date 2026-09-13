@@ -34,6 +34,31 @@ const PT_PER_PX = 0.75;
 const PX_PER_IN = 96;
 const EMU_PER_IN = 914400;
 
+/**
+ * Resolve a user-supplied path against baseDir and reject traversal / escape.
+ * Accepts relative in-tree paths, absolute paths under baseDir, and file:// URLs.
+ */
+function resolveSafePath(inputPath, baseDir) {
+  if (typeof inputPath !== 'string' || inputPath.length === 0 || inputPath.includes('\0')) {
+    throw new Error(`Invalid path: ${inputPath}`);
+  }
+
+  let raw = inputPath.startsWith('file://') ? inputPath.slice('file://'.length) : inputPath;
+  try {
+    raw = decodeURIComponent(raw);
+  } catch {
+    // keep raw if it is not percent-encoded
+  }
+
+  const base = path.resolve(baseDir);
+  const resolved = path.resolve(base, raw);
+  const relative = path.relative(base, resolved);
+  if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+    throw new Error(`Path escapes allowed directory: ${inputPath}`);
+  }
+  return resolved;
+}
+
 // Helper: Fix image path if file extension doesn't match actual format
 function fixImageExtension(imagePath, tmpDir) {
   try {
@@ -151,9 +176,7 @@ function validateTextBoxPosition(slideData, bodyDimensions) {
 // Helper: Add background to slide
 async function addBackground(slideData, targetSlide, tmpDir) {
   if (slideData.background.type === 'image' && slideData.background.path) {
-    let imagePath = slideData.background.path.startsWith('file://')
-      ? slideData.background.path.replace('file://', '')
-      : slideData.background.path;
+    const imagePath = resolveSafePath(slideData.background.path, process.cwd());
     targetSlide.background = { path: fixImageExtension(imagePath, tmpDir) };
   } else if (slideData.background.type === 'color' && slideData.background.value) {
     targetSlide.background = { color: slideData.background.value };
@@ -164,7 +187,7 @@ async function addBackground(slideData, targetSlide, tmpDir) {
 function addElements(slideData, targetSlide, pres, tmpDir) {
   for (const el of slideData.elements) {
     if (el.type === 'image') {
-      let imagePath = el.src.startsWith('file://') ? el.src.replace('file://', '') : el.src;
+      const imagePath = resolveSafePath(el.src, process.cwd());
       targetSlide.addImage({
         path: fixImageExtension(imagePath, tmpDir),
         x: el.position.x,
@@ -976,7 +999,7 @@ async function html2pptx(htmlFile, pres, options = {}) {
     let bodyDimensions;
     let slideData;
 
-    const filePath = path.isAbsolute(htmlFile) ? htmlFile : path.join(process.cwd(), htmlFile);
+    const filePath = resolveSafePath(htmlFile, process.cwd());
     const validationErrors = [];
 
     try {
