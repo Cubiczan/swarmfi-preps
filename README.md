@@ -256,3 +256,22 @@ This repository is hardened with the [Consensus Hardening Protocol (CHP)](https:
 ### CHP Version
 cognitive-mesh-orchestrator 0.1.0 | [Protocol Docs](https://codeberg.org/cubiczan/consensus-hardening-protocol)
 
+
+---
+
+## Propagation decisions (DeFi wave B)
+
+- **Row 4 (calibration feedback loop — Brier score → softmax weights) — reversed.**
+  The row's own settled condition fires: Brier weights are statistically
+  empty until enough outcomes resolve, and this desk has no outcome stream
+  at all — the nine specialist agents vote LONG/SHORT/NEUTRAL through
+  `src/lib/swarm/agents.ts` and `src/lib/swarm/consensus.ts` renders the
+  consensus live, but no trade execution, position persistence, or
+  settlement feed exists anywhere in `src/` (verified by search this wave),
+  so there is nothing to score against. The current hand-picked reliability
+  priors (`AGENT_WEIGHTS` in `src/lib/swarm/consensus.ts`: Funding 1.3 …
+  Volatility 0.8) beat noise under the row's own standard. Revisit when the
+  desk persists its own recommendations and resolves them against realized
+  perp outcomes on a dense, objective cadence — then port pythia's
+  `update_weights` loop (canonical `pythia_consensus.engine.py`) to score
+  the nine agents and feed the weights back between runs.
