@@ -9,6 +9,16 @@ AI agent swarm intelligence platform that analyzes perpetual futures markets in 
 
 ---
 
+<!-- product-screenshots:start -->
+## Product screenshots
+
+Perpetual-futures dashboard showing the agent swarm, consensus signal, and analysis controls.
+
+![swarmfi-preps product interface](public/demo/screenshot-02-dashboard.png)
+
+Existing UI capture stored in this repository; displayed values may be demo or sample data.
+<!-- product-screenshots:end -->
+
 ## Overview
 
 SwarmFi Perps is a zero-token AI agent swarm intelligence platform designed for perpetual futures market analysis. It leverages the publicly accessible dYdX v4 Indexer API to gather real-time market data -- orderbook depth, recent trades, OHLCV candles, and historical funding rates -- and feeds it to nine independent specialist agents that each evaluate a different aspect of market conditions.
