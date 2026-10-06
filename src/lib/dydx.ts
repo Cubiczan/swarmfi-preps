@@ -5,7 +5,7 @@
  * No authentication required — all endpoints are read-only.
  */
 
-import { safeFetch } from "./resilience/index.js";
+import { safeFetch } from "./resilience";
 
 const DYDX_INDEXER = "https://indexer.v4prod.dydx.exchange";
 

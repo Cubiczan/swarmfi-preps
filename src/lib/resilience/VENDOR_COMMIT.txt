@@ -16,9 +16,11 @@ timeout/rateLimit/auth).
 
 Intentional local deltas (preserve these when syncing — do not "fix" them
 by copying canonical files over this directory wholesale)
-- Core modules (errors/retry/safeFetch) are byte-identical to the
-  canonical package at the pinned commit.
-- The barrel (index.ts) exports only the subset this repo uses.
+- Core modules (errors/retry/safeFetch) match the canonical package at
+  the pinned commit, except relative imports omit the `.js` suffix.
+  Turbopack does not resolve those specifiers to the `.ts` sources.
+- The barrel (index.ts) exports only the subset this repo uses, and
+  likewise omits `.js` suffixes on its re-exports.
 
 Missing from this copy (relative to the pinned upstream)
 --------------------------------------------------------

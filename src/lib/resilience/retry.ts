@@ -9,7 +9,7 @@
  * beside this file.
  */
 
-import { ResilienceError } from "./errors.js";
+import { ResilienceError } from "./errors";
 
 export interface RetryOptions {
   /** Maximum number of attempts (including the first). Default 3. */

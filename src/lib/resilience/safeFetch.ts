@@ -9,8 +9,8 @@
  * beside this file.
  */
 
-import { ResilienceError } from "./errors.js";
-import { retry } from "./retry.js";
+import { ResilienceError } from "./errors";
+import { retry } from "./retry";
 
 /**
  * SSRF allowlist hook. Return `true` to allow the request to `url`, `false`

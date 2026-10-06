@@ -40,3 +40,7 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npx prisma generate
       - run: npx tsc --noEmit
+      - name: build
+        run: npm run build
+        env:
+          DATABASE_URL: file:./dev.db

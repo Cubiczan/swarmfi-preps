@@ -12,12 +12,12 @@
   isResilienceError,
   type ResilienceErrorKind,
   type ResilienceErrorOptions,
-} from "./errors.js";
+} from "./errors";
 
-export { retry, computeBackoff, type RetryOptions } from "./retry.js";
+export { retry, computeBackoff, type RetryOptions } from "./retry";
 
 export {
   safeFetch,
   type SafeFetchOptions,
   type AllowlistHook,
-} from "./safeFetch.js";
+} from "./safeFetch";
